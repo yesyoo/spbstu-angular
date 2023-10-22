@@ -1,0 +1,13 @@
+.ticket-item {
+    height: 300px;
+    border: 1px solid grey;
+    display: flex;
+    flex-direction: column;
+    & .ticket-item {
+        padding: 2px;
+    }
+    & img {
+        height: 200px;
+        
+    }
+}

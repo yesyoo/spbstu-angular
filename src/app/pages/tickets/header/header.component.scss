@@ -1,0 +1,15 @@
+:host {
+    height: 60px;
+    width: 100%;
+    display: block;
+}
+
+.user-block{
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    right: 0;
+    padding: 4px;
+    gap: 20px;
+    align-items: center;
+}

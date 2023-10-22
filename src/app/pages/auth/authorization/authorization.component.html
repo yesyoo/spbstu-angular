@@ -1,0 +1,37 @@
+<div class="d-flex flex-column">
+       <div class="d-flex flex-column mb-3">
+             <span>{{loginText}}</span>
+             <input type="text"
+             pInputText
+             [ngClass]="{'input-error': !login}"
+             [(ngModel)]="login"/>
+       </div>
+       <div class="d-flex flex-column mb-3">
+            <span>{{pswText}}</span>
+            <input type="password"
+            pInputText
+            [ngClass]="{'input-error': !psw}"
+            [(ngModel)]="psw"
+       />
+       </div>
+       <div>
+              <p-checkbox label="Есть номер карты" (onChange)="vipStatusSelected()" 
+              class="mb-3" name="groupname" [binary]="true" [(ngModel)]="selectedValue"></p-checkbox>
+
+              <div *ngIf="selectedValue" class="d-flex flex-column mt-3 mb-3">
+                     <span>{{cardNumberText}}</span>
+                     <input type="text"
+                     pInputText
+                     [(ngModel)]="cardNumber"
+                     />
+              </div>
+       </div>
+</div>
+<button [disabled]="!login || !psw" 
+        (click)="onAuth($event)" 
+    
+        type="button" 
+        class="btn btn-success">{{authTextButton}}</button>
+
+
+
