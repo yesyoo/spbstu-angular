@@ -1,0 +1,13 @@
+.settings-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-width: 200px;
+    width: 200px;
+    flex-basis: 200px;
+    height: 100%;
+}
+.settings-right{
+    display: flex;
+    width: 100%;
+}

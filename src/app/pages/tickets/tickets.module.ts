@@ -11,6 +11,13 @@ import { MenubarModule } from 'primeng/menubar';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms'
 import { BlockStyleDirective } from 'src/app/directives/block-style.directive';
+import { CalendarModule } from 'primeng/calendar';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { InputTextModule } from 'primeng/inputtext';
+
+
 
 
 
@@ -28,8 +35,12 @@ import { BlockStyleDirective } from 'src/app/directives/block-style.directive';
     TicketsRoutingModule,
     MenubarModule,
     DropdownModule,
-    FormsModule
-
-  ]
+    FormsModule,
+    CalendarModule,
+    ButtonModule,
+    ToastModule,
+    InputTextModule
+  ],
+  providers: [MessageService]
 })
 export class TicketsModule { }

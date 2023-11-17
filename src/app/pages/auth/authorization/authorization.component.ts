@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { AuthService } from '../../../services/auth/auth.service';
 import { IUser } from '../../../models/users';
 import { MessageService } from 'primeng/api';
@@ -12,7 +12,7 @@ import { UserService } from 'src/app/services/user/user.service';
   styleUrls: ['./authorization.component.scss']
 })
 
-export class AuthorizationComponent implements OnInit, OnDestroy {
+export class AuthorizationComponent implements OnInit {
   loginText = 'Логин';
   pswText = 'Пароль';
   cardNumberText = 'Номер карты'
@@ -21,6 +21,7 @@ export class AuthorizationComponent implements OnInit, OnDestroy {
   selectedValue: boolean;
   cardNumber: string;
   authTextButton: string;
+  token: string;
 
   constructor(private authService: AuthService,
               private messageService: MessageService,
@@ -28,32 +29,39 @@ export class AuthorizationComponent implements OnInit, OnDestroy {
               private userService: UserService) { }
 
   ngOnInit(): void {
-    console.log('init')
     this.authTextButton = 'Авторизоваться'
-    
   };
+
   ngOnDestroy(): void {
   };
+
   vipStatusSelected(): void {
   };
 
   onAuth(ev: Event): void {
     const authUser: IUser = {
       psw: this.psw,
-      login: this.login
+      login: this.login,
+      cardNumber: this.cardNumber
     };
 
-
-    if(!this.authService.checkUser(authUser)?.error) {
+    const user = localStorage.getItem(`user_${authUser?.login}`);
+    if(user) {
+      const userObj = JSON.parse(user)
+      this.token = userObj.token
+      console.log(this.token)
+    };
+    
+    if(!this.authService.checkUser(authUser)?.error) { 
       this.userService.setUser(authUser)
-   
+      this.userService.setToken(this.token)
       this.messageService.add({severity:'success', summary:'Авторизация прошла успешно'})
       this.router.navigate(['tickets/ticket-list'])
+
     } else {
-      const errotText: any =this.authService.checkUser(authUser);
+      const errotText: any = this.authService.checkUser(authUser); 
       this.messageService.add({severity:'warn', summary: errotText?.error || 'Ошибка'})
     }
   };
-
-}
+};
  

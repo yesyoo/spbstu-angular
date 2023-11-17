@@ -2,21 +2,18 @@
     <div class="flex-grow-1">
         <p-menubar [model]="items"></p-menubar>
     </div>
-
-
     <div class="user-block">
-        <div>
+        <div *ngIf="user" >
             <div class="user-login">
-                {{user?.login}}
+                login: {{user.login}} 
+            </div>
+            <div class="user-login">
+                psw: {{user.psw}}
             </div>
         </div>
-
         <div class="time-block">
             <div>{{time | date: 'HH:mm:ss'}}</div>
             <p class="timer- p-0 m-0">{{time | date: 'EEEE'}}</p>
         </div>
-
-        
     </div>
-    
 </div>

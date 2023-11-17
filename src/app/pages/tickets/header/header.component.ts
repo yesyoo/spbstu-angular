@@ -1,68 +1,80 @@
-import { Component, OnInit, OnDestroy, Input, Output, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { IUser } from '../../../models/users';
 import { UserService } from '../../../services/user/user.service'
 import { IMenuType } from 'src/app/models/menuType';
 import { SimpleChanges } from '@angular/core';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   items: MenuItem[];
   time: Date;
   private timerInterval: number;
-  
-  user: IUser;
-
+  user: IUser | undefined; 
   @Input() menuType: IMenuType;
-  private settingsActive = false
+  private settingsActive = true;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,
+              private authService: AuthService,
+              private el: ElementRef) { }
 
   ngOnInit(): void {
-    this.items = [
-      {
-        label: 'Билеты',
-        routerLink: ['ticket-list']
-      },
-      {
-        label: 'Выйти',
-        routerLink: ['/auth']
-      }
-    ];
+    this.items = this.initMenuItems();
+    
     this.timerInterval = window.setInterval(() => {
       this.time = new Date()
     }, 1000);
-    this.user = this.userService.getUser()
+
+    this.user = this.userService.getUser() 
+    // setTimeout(() => {console.log('user:', this.user?.login)}, 3000)
   };
+
   ngOnDestroy(): void {
     if(this.timerInterval) {
       window.clearInterval(this.timerInterval)
     }
   };
 
+  ngAfterViewInit() {}
+
+  ngOnChanges(ev: SimpleChanges): void {
+    if (ev['menuType'].currentValue) {
+      this.settingsActive = this.menuType?.type === "extended";
+      this.items = this.initMenuItems();
+    }
+    console.log('ev', ev);
+  };
+
   initMenuItems(): MenuItem[] {
     return [
       {
         label: 'Билеты',
-        routerLink:['tickets-list']
+        routerLink:['ticket-list']
       },
       {
         label: 'Настройки',
-        routerLink:['/settings'],
+        routerLink:['settings'],
         visible: this.settingsActive
-      },
+      }, 
       {
         label: 'Выйти',
-        routerLink:['/auth']
-      },
+        routerLink:['auth'],
+        command: (ev) => {
+            this.removeUser();
+        }
+      }
     ];
   };
-  ngOnChanges(ev: SimpleChanges): void {
-    this.settingsActive = this.menuType?.type === "extended";
-    this.items = this.initMenuItems();
- }
-}
+
+  removeUser(): void {
+    const activeUser = this.userService.getUser();
+    if (activeUser) {
+      this.authService.deleteUser(activeUser)
+    }
+  };
+};

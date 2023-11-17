@@ -6,11 +6,14 @@ import { ITour } from 'src/app/models/tours';
 })
 export class TiсketsStorageService {
   private ticketStorage: ITour[];
+  
   constructor() { }
+
   setStorage(data: ITour[]): void {
     this.ticketStorage = data
-  }
+  };
+
   getStorage(): ITour[] {
     return this.ticketStorage
-  }
+  };
 }

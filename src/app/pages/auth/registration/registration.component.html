@@ -2,44 +2,48 @@
     <div class="d-flex flex-column mb-3">
         <span>Логин</span>
         <input type="text"
-        pInputText
-        [ngClass]="{'input-error': !login}"
-        [(ngModel)]="login"/>
+               pInputText
+               [ngClass]="{'input-error': !login}"
+               [(ngModel)]="login"/>
     </div>
     <div class="d-flex flex-column mb-3">
         <span>Пароль</span>
         <input type="password"
-        pInputText
-        [ngClass]="{'input-error': !psw}"
-        [(ngModel)]="psw"/>
+               pInputText
+               [ngClass]="{'input-error': !psw}"
+               [(ngModel)]="psw"/>
     </div>
     <div class="d-flex flex-column mb-3">
         <span>Подтверждение пароля</span>
         <input type="password"
-        pInputText
-        [ngClass]="{'input-error': !pswRepeat}"
-        [(ngModel)]="pswRepeat"/>
+               pInputText
+               [ngClass]="{'input-error': !pswRepeat}"
+               [(ngModel)]="pswRepeat"/>
     </div>
     <div class="d-flex flex-column mb-3">
         <span>Почта</span>
         <input type="text"
-        pInputText
-        [(ngModel)]="email"/>
+               pInputText
+               [(ngModel)]="email"/>
     </div>
-    <div class="d-flex flex-column mb-3">
+    <div *ngIf="showCardNumber; else noSelected";  
+         class="d-flex flex-column mb-3">
         <span>Номер карты</span>
         <input type="text"
-        pInputText
-        [(ngModel)]="cardNumber"/>
+               pInputText
+               [(ngModel)]="cardNumber"/>
     </div>
-    
 </div>
 <button [disabled]="!login || !psw || !pswRepeat" 
         (click)="registration($event)" 
         type="button" 
-        class="btn btn-success mb-3">Регистрация</button>
-
+        class="btn btn-success mb-3">Регистрация
+</button>
 <div>
-    <p-checkbox label="Сохранить пользователя в локальном хранилище" (click)="saveUser($event)" class="mb-3" name="groupname" [binary]="true" [(ngModel)]="checked"></p-checkbox>
+    <p-checkbox label="Сохранить пользователя в локальном хранилище" (click)="saveUserToLocalStorage($event)" class="mb-3" name="groupname" [binary]="true" [(ngModel)]="checked"></p-checkbox>
 </div>
+
+<ng-template #noSelected>
+    <p>ng-template: Карта не выбрана</p>
+</ng-template>
         

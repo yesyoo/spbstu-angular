@@ -1,65 +1,69 @@
 import { Injectable } from '@angular/core';
 import { IUser } from 'src/app/models/users';
+import { LocalStorageService } from '../local-storage/local-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
-  private usersStorage: IUser[] = [];
+  private usersStorage: IUser[] = [];   
   private loginError = {error: 'Логин не совпадает'};
-  constructor() { }
+  
+  constructor(private localStorageService: LocalStorageService) { } 
 
-  checkUser(user: IUser):  {error: string | boolean} {
-
-    const isUserExists = this.usersStorage.find((el) => el.login === user.login)
-    let isUserSavedInStore = localStorage.getItem('user_' + user?.login)
-    let userInStore: IUser = <IUser>{}
-
-    if(isUserSavedInStore) {
-      userInStore = JSON.parse(isUserSavedInStore)
+  checkUser(user: IUser):  {error: boolean | string} { 
+    // ожидаем {error : false} и авторизуем юзера
+    const userInUsersStorage: IUser | undefined = this.usersStorage.find((el) => el.login === user.login)
+    const userInLocalStorage: IUser | null = this.localStorageService.getUser(user)
+    
+    if(userInLocalStorage) {
+      return userInLocalStorage.psw === user.psw ? {error: false} : {error: 'Пароли не совпадают'};
+    } else if (!userInLocalStorage) {
+      return this.loginError;
     };
  
-    if(isUserExists) {
-      
-      return isUserExists.psw === user.psw ? {error: false} : {error: 'Пароли не совпадают'};
-    } else if (!isUserSavedInStore) {
-      return this.loginError;
-    }
-
-    
-   if(!isUserExists && isUserSavedInStore) {
-    if (userInStore?.login ===user.login) {
-      return  userInStore.psw == user.psw  ? {error: false} : {error: 'Пароли не совпадают'}
-    } else {
-      return this.loginError;
-    }
-   } 
-
-    return {error : 'Ошибка'}
-  };
-  checkUserPsw() {}
-
-  isUserExists(user: IUser): boolean {
-    if(localStorage.getItem(`user_${user.login}`)) {
-      return true
-    } else { return false}
-    
+    if(!userInUsersStorage && userInLocalStorage) {
+      const useStorage = userInLocalStorage as IUser;
+      if (useStorage.login === user.login) {
+        return useStorage.psw == user.psw  ? {error: false} : {error: 'Пароли не совпадают'}
+      } else {
+        return this.loginError;
+      } 
+    };
+    return {error : 'Ошибка'};
   };
 
-  setUser(user: IUser): void {
-    const isUserExists = this.usersStorage.find(el => el.login === user.login);
-    if(!isUserExists && user?.login) {
+  setUserToUsersStorage(user: IUser): void {
+    if(!this.usersStorage.find(el => el.login === user.login) && user?.login) {
       this.usersStorage.push(user)
     };
   };
-  setUserToLocalStorage(): void {
-    const user: IUser = this.usersStorage[this.usersStorage.length -1];
-    console.log(this.usersStorage.length - 1)
-    localStorage.setItem(`user_${user.login}`, JSON.stringify(user))
+
+  setUserToLocalStorage(user: IUser): void {
+    this.localStorageService.setUser(user)
+  };
+  
+  checkUserInLocalStorage(user: IUser): boolean {
+    return !!this.localStorageService.getUser(user)
   };
 
-  getUserStorage() { 
-    return this.usersStorage
-  }
-}
+  deleteUserFromLocalStorage(user: IUser): void {
+    this.localStorageService.deleteUser(user)
+  };
+
+  deleteUser(user: IUser): void {
+    this.localStorageService.deleteUser(user);
+    if (Array.isArray(this.usersStorage)) {
+      this.usersStorage =  this.usersStorage.filter((el) => el.login !== user.login);
+    };
+  };
+
+  updateUserPassword(user: IUser, psw: string): void {
+    user.psw = psw
+    this.localStorageService.setUser(user)
+  };
+};
+
+
 

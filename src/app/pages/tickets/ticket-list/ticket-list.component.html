@@ -1,7 +1,15 @@
-<div *ngIf="tickets">
-    <div>Количество элементов: {{tickets.length}}</div>
-    <div>Активный элемент: index {{blockDirective?.activeElementIndex }}</div>
+<div>
+    <!-- <div *ngIf="loadCountBlock"> -->
+    <div class="mb-3">
+        <span>Количество элементов: {{tickets?.length}}</span>
+        <span *ngIf="blockDirective" class="mx-3">Активный элемент: index {{blockDirective.activeElementIndex }}</span>
+    </div>
+    <div>
+        <input class="mb-3" pInputText type="text" #ticketSearch [(ngModel)]="ticketSearchValue">
+    </div>
+
     <div #tourWrap #blockDirective="blockStyle"
+         *ngIf="tickets"
          appBlockStyle 
          [selector]="'.ticket-item'"
          [initFirst]="false"
@@ -10,13 +18,11 @@
     
         <div class="ticket-item col-3 m-2" 
              *ngFor="let item of tickets; let i = index;"
-             
              (click)="goToTicketInfoPage(item.id)"> 
             <div class="ticket-title">{{item.name}}</div>
             <div class="ticket-img">
                 <img class="w-100" src="/assets/img/{{item.img}}" alt="/">
             </div>
-        
         </div>
     </div>
 </div>
