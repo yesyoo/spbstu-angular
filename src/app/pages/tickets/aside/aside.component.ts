@@ -1,9 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IMenuType } from 'src/app/models/menuType';
 import { ITourTypeSelect } from 'src/app/models/tours';
-import { TicketsService } from '../../../services/tickets/tickets.service';
+import { TicketsService } from '../../../services/ticket/tickets/tickets.service';
 import { MessageService } from 'primeng/api';
 import { SettingsService } from '../../../services/settings/settings.service';
+import { HttpClient } from '@angular/common/http';
+import { ITour } from 'src/app/models/tours';
 
 
 @Component({
@@ -20,7 +22,8 @@ export class AsideComponent implements OnInit {
  
   constructor(private ticketService: TicketsService,
               private messageService: MessageService,
-              private settingsService: SettingsService) {}
+              private settingsService: SettingsService,
+              private http: HttpClient) {}
 
   ngOnInit(): void {
     this.menuTypes = [
@@ -40,11 +43,11 @@ export class AsideComponent implements OnInit {
   };
 
   changeTourType(ev:  {ev: Event, value: ITourTypeSelect}): void {
-    this.ticketService.updateTour(ev.value)
+    this.ticketService.updateTourType(ev.value)
   };
   selectDate(ev: string) {
     console.log('ev selected date', ev)
-    this.ticketService.updateTour({date:ev}) 
+    this.ticketService.updateTourType({date:ev}) 
     // отстаем на 1 сутки, время 00:00:00 (+ 3 часа - в этом проблема)
   };
   
@@ -63,5 +66,17 @@ export class AsideComponent implements OnInit {
     this.settingsService.loadUserSettingsSubject(
       { saveToken: false }
     );
+  };
+
+  initTours(): void {
+    this.http.post('http://localhost:3000/tours/', {}).subscribe((data) => {
+        this.ticketService.updateToursForRender(data as ITour[])
+    })
+  };
+
+  deleteTours(): void {
+    this.http.delete('http://localhost:3000/tours/').subscribe(data => {
+      this.ticketService.updateToursForRender(data as ITour[])
+    })
   };
 };

@@ -4,14 +4,13 @@ export interface ITour {
     tourOperator: string,
     price: string,
     img: string,
-    id: string,
     type: string,
-    date: string
+    date: string,
+    id: string,
+    _id: string
 }
 
-// 
 export type TourType = 'Одиночный' | 'Групповой';
-//
 
 export interface ITourTypeSelect {
     label?: string,

@@ -10,7 +10,9 @@ export class RestInterceptorsService implements HttpInterceptor{
   constructor(private userService: UserService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const hasToken = this.userService.getToken();
+    // const hasToken = this.userService.getToken();
+    const hasToken: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6InlvdSIsInBzdyI6IjEiLCJpYXQiOjE3MDEyODYyNjZ9.QBK5h-EWAmQCHjwKGgzU6ShuJtmVa1ZmKGD1WKeOAfc"
+   
     
     if(hasToken) {
       const cloned = req.clone({

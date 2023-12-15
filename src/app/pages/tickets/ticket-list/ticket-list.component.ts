@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
-import { TicketsService } from 'src/app/services/tickets/tickets.service';
+import { TicketsService } from 'src/app/services/ticket/tickets/tickets.service';
 import { ITour, ITourTypeSelect } from '../../../models/tours';
-import { TiсketsStorageService } from 'src/app/services/tiсkets-storage/tiсkets-storage.service';
+import { TiсketsStorageService } from 'src/app/services/ticket/tiсkets-storage/tiсkets-storage.service';
 import { Router } from '@angular/router';
 import { BlockStyleDirective } from 'src/app/directives/block-style.directive';
 import { Subscription, fromEvent, debounceTime } from 'rxjs'
@@ -28,15 +28,12 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('ticketSearch') ticketSearch: ElementRef;
 
   constructor(private ticketService: TicketsService,
-              private ticketsStorageService: TiсketsStorageService,
-              private router: Router,
-              private userService: UserService) {}
+              // private ticketsStorageService: TiсketsStorageService,
+              private router: Router) {}
 
   ngOnInit(): void {
-    if(this.userService.getTokenFromLocalStorage()) {
-      const token = <string>this.userService.getTokenFromLocalStorage()
-      this.userService.setToken(token)
-    };
+    this.ticketService.ticketUpdateSubject$.subscribe(data => {
+      this.tickets = data }) // нужно отписаться
 
     this.tourUnsubscriber = this.ticketService.ticketType$.subscribe((data: ITourTypeSelect) => {
       console.log('data', data);
@@ -54,7 +51,7 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
           break;
       };
 
-      this.loadCountBlock = true;
+      this.loadCountBlock = true; // ?
 
       setTimeout(() => {
         this.blockDirective.updateItems(); 
@@ -71,11 +68,11 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
       };
     });
 
-    this.ticketService.getTickets().subscribe(
+    this.ticketService.getTours().subscribe(
       (data) => {
            this.tickets = data;
            this.ticketsCopy = [...this.tickets];
-           this.ticketsStorageService.setStorage(data);
+          //  this.ticketsStorageService.setStorage(data);
       }
     );
   };
@@ -98,8 +95,8 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchTicketSub.unsubscribe();
   };
 
-  goToTicketInfoPage(id: string): void {
-    this.router.navigate([`/tickets/ticket/${id}`])
+  goToTicketInfoPage(data: ITour): void {
+    this.router.navigate([`/tickets/ticket/${data._id}`])
   };
 
   directiveRenderComplete(ev: boolean) {

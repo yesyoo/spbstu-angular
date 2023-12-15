@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ICustomStatisticUser } from '../../../models/statistic';
-import { StatisticService } from '../../../services/statistic/statistic.service';
+import { StatisticService } from '../../../services/stat/statistic/statistic.service';
 
 @Component({
   selector: 'app-statistic',

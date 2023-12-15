@@ -3,6 +3,9 @@ import { MessageService } from 'primeng/api';
 import { IUser } from 'src/app/models/users';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ConfigService } from '../../../services/config/config.service';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { IServerError } from 'src/app/models/server-error';
+
 
 
 @Component({
@@ -20,10 +23,12 @@ export class RegistrationComponent implements OnInit {
   // card checkbox
   checked: boolean;
   showCardNumber: boolean;
-  newUser: IUser
- 
+  
+  userDb: IUser
+  user: IUser
   constructor(private messageService: MessageService,
-              private authService: AuthService) { }
+              private authService: AuthService, 
+              private http: HttpClient) { }
 
   ngOnInit(): void {
     this.showCardNumber = ConfigService.config.useUserCard
@@ -33,28 +38,36 @@ export class RegistrationComponent implements OnInit {
     if(this.psw !== this.pswRepeat) {
       this.messageService.add({severity:'error', summary:'Пароли не совпадают'})
       return false
-    };
-
-    const user: IUser = {
-      psw: this.psw,
-      cardNumber: this.cardNumber,
-      login: this.login,
-      email: this.email,
-      token: Math.ceil(Math.random() * 10000).toString()
-    };
-    
-    if(!this.authService.checkUserInLocalStorage(user)) {
-      this.authService.setUserToUsersStorage(user)
-      this.newUser = user
-      this.messageService.add({severity:'success', summary:'Регистрация прошла успешно'})
     } else {
-        this.messageService.add({severity:'warn', summary:'Пользователь уже существует'})
-    };
+
+      this.user = {
+        psw: this.psw,
+        cardNumber: this.cardNumber,
+        login: this.login,
+        email: this.email
+      };
+
+      this.http.post<IUser>('http://localhost:3000/users/', this.user)
+      .subscribe(response => 
+      {
+        // конструкция - ну такое
+        if(response as IUser) {
+          this.userDb = response
+          console.log('we saved user in db:', response);
+          this.messageService.add({severity:'success', summary:'Регистрация прошла успешно'})
+        } 
+      },
+      (err: HttpErrorResponse) => {
+        console.log('err', err);
+        const serverError = <IServerError>err.error
+        this.messageService.add({severity:'warn', summary: serverError.errorText})
+      }
+    )};
   };
  
   saveUserToLocalStorage(ev: Event): void {
     if(this.checked) {
-      this.authService.setUserToLocalStorage(this.newUser);
+      this.authService.setUserToLocalStorage(this.userDb);
     };
   };
 };

@@ -5,6 +5,7 @@ import { UserService } from '../../../services/user/user.service'
 import { IMenuType } from 'src/app/models/menuType';
 import { SimpleChanges } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth.service';
+import { TicketsService } from '../../../services/ticket/tickets/tickets.service';
 
 @Component({
   selector: 'app-header',
@@ -21,6 +22,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private userService: UserService,
               private authService: AuthService,
+              private ticketService: TicketsService,
               private el: ElementRef) { }
 
   ngOnInit(): void {
@@ -60,6 +62,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         label: 'Настройки',
         routerLink:['settings'],
         visible: this.settingsActive
+      }, 
+      {
+        label: 'Заказы',
+        routerLink:['orders']
       }, 
       {
         label: 'Выйти',

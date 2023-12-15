@@ -3,7 +3,6 @@ export interface IUser {
     email?: string,
     psw: string,
     cardNumber?: string,
-    //
-    token?: string | null 
-    //
+    token?: string | null,
+    id?: string | null
 }

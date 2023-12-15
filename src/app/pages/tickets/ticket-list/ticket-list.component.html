@@ -18,10 +18,10 @@
     
         <div class="ticket-item col-3 m-2" 
              *ngFor="let item of tickets; let i = index;"
-             (click)="goToTicketInfoPage(item.id)"> 
+             (click)="goToTicketInfoPage(item)"> 
             <div class="ticket-title">{{item.name}}</div>
             <div class="ticket-img">
-                <img class="w-100" src="/assets/img/{{item.img}}" alt="/">
+                <img class="w-100" src="http://localhost:3000/public/{{item.img}}" alt="/">
             </div>
         </div>
     </div>

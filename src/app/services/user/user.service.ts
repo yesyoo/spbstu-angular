@@ -7,7 +7,7 @@ import { IUser } from '../../models/users';
 
 export class UserService {
   private user: IUser;
-  private token: string | null
+  private token: string;
 
   constructor() { }
 

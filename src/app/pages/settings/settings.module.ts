@@ -10,7 +10,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { StatisticComponent } from './statistic/statistic.component';
-import { TableModule } from 'primeng/table'
+import { TableModule } from 'primeng/table';
+import { TourComponent } from './tour/tour.component'
 
 
 
@@ -19,7 +20,8 @@ import { TableModule } from 'primeng/table'
     SettingsComponent,
     PasswordComponent,
     EmptyComponent,
-    StatisticComponent
+    StatisticComponent,
+    TourComponent
   ],
   imports: [
     CommonModule,

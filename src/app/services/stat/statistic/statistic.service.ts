@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StatisticRestService } from '../statistic-rest/statistic-rest.service';
 import { Observable, map } from 'rxjs';
-import { ICustomStatisticUser } from '../../models/statistic';
+import { ICustomStatisticUser } from '../../../models/statistic';
 
 @Injectable({
   providedIn: 'root'

@@ -1,20 +1,35 @@
 import { Injectable } from '@angular/core';
 import { ITour } from 'src/app/models/tours';
 import { HttpClient } from '@angular/common/http';
-
 import { Observable } from 'rxjs';
-import { INearestTour, ITourLocation } from '../../models/tours';
+import { INearestTour, ITourLocation } from '../../../models/tours';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class RestService {
+export class TicketsRestService {
+
   constructor(private http: HttpClient) { }
 
   getTickets(): Observable<ITour[]> {
-    return this.http.get<ITour[]>('https://62b9e756ff109cd1dc9dae16.mockapi.io/apiv/v1/tours/')
+    return this.http.get<ITour[]>('http://localhost:3000/tours')
   };
 
+  getTicketById(id: string): Observable<ITour> {
+    return this.http.get<ITour>(`http://localhost:3000/tours/${id}`)
+  };
+  postTour(data: any): Observable<any> {
+    return this.http.post('http://localhost:3000/tour-item', data, {headers: {}})
+  }
+  searchTourByName(name: string): Observable<ITour> {
+    return this.http.get<ITour>(`http://localhost:3000/tours/${name}`)
+  }
+
+
+
+  /////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////
   getRestError(): Observable<any> {
     return this.http.get<any>('https://62b9e756ff109cd1dc9dae16.mockapi.io/apiv/v1/tours/notFound');
   };
@@ -39,9 +54,5 @@ export class RestService {
       default:
         return this.http.get<INearestTour>('/assets/mocks/nearestTours2.json')
     }
-  };
-
-  sendTourData(data: any): Observable<any> { 
-    return this.http.post('/assets/mocks/nearestTours1.json', data)
   };
 }

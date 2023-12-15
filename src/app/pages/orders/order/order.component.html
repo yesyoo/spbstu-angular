@@ -1,0 +1,19 @@
+<div *ngIf="user">
+    <div *ngFor="let item of orders; let i = index;"> 
+         <div class="order">
+            <h6><strong>Заказ №</strong> {{i + 1}}</h6>
+            <p><strong>firstName:</strong> {{item.firstName}}</p>
+            <p><strong>lastName:</strong> {{item.lastName}}</p>
+            <p><strong>citizen:</strong> {{item.citizen}}</p>
+            <p><strong>age:</strong> {{item.age}}</p>
+            <p><strong>birthDay:</strong> {{item.birthDay}}</p>
+            <p><strong>cardNumber:</strong> {{item.cardNumber}}</p>
+            <p><strong>tourId:</strong> {{item.tourId}}</p>
+         </div>
+         <button *ngIf="item.tourId" (click)="deleteOrder(item.tourId)">Delete</button>
+    </div>
+</div>
+<div *ngIf="!user">Авторизуйтесь</div>
+
+
+

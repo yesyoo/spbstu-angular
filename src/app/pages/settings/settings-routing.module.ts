@@ -4,6 +4,7 @@ import { PasswordComponent } from './password/password.component';
 import { SettingsComponent } from './settings.component';
 import { EmptyComponent } from './empty/empty.component';
 import { StatisticComponent } from './statistic/statistic.component';
+import { TourComponent } from './tour/tour.component';
 
 const routes: Routes = [
     { 
@@ -11,7 +12,7 @@ const routes: Routes = [
       children: [
         {
           path: '', 
-          component: PasswordComponent
+          component: TourComponent
         },
         {
           path: 'password', 
@@ -22,8 +23,8 @@ const routes: Routes = [
           component: StatisticComponent
         },
         {
-          path: 'empty',
-          component: EmptyComponent
+          path: 'tour',
+          component: TourComponent
         }
       ]}
 ];

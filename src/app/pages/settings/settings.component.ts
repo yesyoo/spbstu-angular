@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subject, take, takeUntil } from 'rxjs';
 import { ObservableExampleService } from '../../services/observable-example/observable-example.service'
 import { SettingsService } from '../../services/settings/settings.service';
-import { TicketsService } from '../../services/tickets/tickets.service';
+import { TicketsService } from '../../services/ticket/tickets/tickets.service';
 
 @Component({
   selector: 'app-settings',
