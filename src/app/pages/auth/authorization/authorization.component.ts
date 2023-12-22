@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { AuthService } from '../../../services/auth/auth.service';
-import { IUser } from '../../../models/users';
+import { IUser, Role } from '../../../models/users';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user/user.service';
@@ -25,8 +25,7 @@ export class AuthorizationComponent implements OnInit {
   authTextButton: string;
   token: string;
 
-  constructor(private authService: AuthService,
-              private messageService: MessageService,
+  constructor(private messageService: MessageService,
               private router: Router,
               private userService: UserService,
               private http: HttpClient) { }
@@ -42,23 +41,20 @@ export class AuthorizationComponent implements OnInit {
   };
 
   onAuth(ev: Event): void {
-    const authUser: IUser = {
+    let authUser: IUser = {
       psw: this.psw,
       login: this.login,
-      cardNumber: this.cardNumber,
+      cardNumber: this.cardNumber
     };
 
-    this.http.post<{access_token: string, id: string}>('http://localhost:3000/users/'+ authUser.login, authUser).subscribe((data) => {
-      
+    this.http.post<any>('http://localhost:3000/users/'+ authUser.login, authUser).subscribe((data) => {
+ 
+      authUser.role = data.role
       this.userService.setUser(authUser);
       const token: string = data.access_token;
       authUser.id = data.id
       this.userService.setToken(token);
-      console.log('user token', token)
-      // this.userService.setToStore(token);
-      this.router.navigate(['tickets/ticket-list']);
-
-      
+      this.router.navigate(['tickets/ticket-list']);      
   },
     (err: HttpErrorResponse) => {
       console.log('err', err);
@@ -66,6 +62,5 @@ export class AuthorizationComponent implements OnInit {
       this.messageService.add({severity:'warn', summary: serverError.errorText})
     });
   };
-  
 };
  

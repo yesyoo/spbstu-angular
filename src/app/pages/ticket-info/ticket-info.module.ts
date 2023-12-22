@@ -9,6 +9,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import {CarouselModule} from 'primeng/carousel';
 import {FormsModule} from '@angular/forms'
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import {FormsModule} from '@angular/forms'
     InputNumberModule,
     CalendarModule,
     CarouselModule,
-    FormsModule
-  ]
+    FormsModule,
+    ToastModule
+  ],
+  providers: [MessageService]
 })
 export class TicketInfoModule { }

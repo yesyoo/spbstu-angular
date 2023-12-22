@@ -17,14 +17,22 @@ export class TicketsRestService {
   };
 
   getTicketById(id: string): Observable<ITour> {
-    return this.http.get<ITour>(`http://localhost:3000/tours/${id}`)
+    return this.http.get<ITour>(`http://localhost:3000/tours/id?id=${id}`)
   };
+
+  getSimiliarTours(country: string): Observable<ITour[]> {
+    console.log('=.')
+    return this.http.get<ITour[]>(`http://localhost:3000/tours/country?country=${country}`)
+  }
+
   postTour(data: any): Observable<any> {
     return this.http.post('http://localhost:3000/tour-item', data, {headers: {}})
   }
-  searchTourByName(name: string): Observable<ITour> {
-    return this.http.get<ITour>(`http://localhost:3000/tours/${name}`)
-  }
+  searchTourByName(name: string): Observable<ITour[]> {
+    return this.http.get<ITour[]>(`http://localhost:3000/tours/tourname?tourname=${name}`)
+  };
+
+
 
 
 

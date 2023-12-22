@@ -5,14 +5,17 @@ import { SettingsComponent } from './settings.component';
 import { EmptyComponent } from './empty/empty.component';
 import { StatisticComponent } from './statistic/statistic.component';
 import { TourComponent } from './tour/tour.component';
+import { RoleGuard } from '../../guards/admin/role.guard';
+import { AuthGuard } from '../../guards/auth/auth.guard';
 
 const routes: Routes = [
     { 
       path: '', component: SettingsComponent,
+      canActivate: [AuthGuard],
       children: [
         {
           path: '', 
-          component: TourComponent
+          component: PasswordComponent
         },
         {
           path: 'password', 
@@ -20,11 +23,13 @@ const routes: Routes = [
         },
         {
           path: 'statistic',
-          component: StatisticComponent
+          component: StatisticComponent,
+          canActivate: [RoleGuard]
         },
         {
           path: 'tour',
-          component: TourComponent
+          component: TourComponent,
+          canActivate: [RoleGuard]
         }
       ]}
 ];

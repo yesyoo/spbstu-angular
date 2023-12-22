@@ -8,14 +8,14 @@ import { IOrder } from 'src/app/models/orders';
 })
 export class OrdersService {
 
-  private orderSubject = new Subject<IOrder[]>();
-  readonly order$ = this.orderSubject.asObservable();
+  private ordersSubject = new Subject<IOrder[]>();
+  readonly orders$ = this.ordersSubject.asObservable();
 
   constructor(private ordersServiceRest: OrdersRestService) { }
 
   getOrdersByUserId(userId: string): void {
     this.ordersServiceRest.getToursByUserId(userId).subscribe(data => {
-      this.orderSubject.next(data)
+      this.ordersSubject.next(data)
     })
   };
 

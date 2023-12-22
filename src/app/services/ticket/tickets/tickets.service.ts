@@ -10,14 +10,16 @@ import { __values } from 'tslib';
 })
 export class TicketsService {
   // tours filter
-  private ticketSubject = new Subject<ITourTypeSelect>();
-  readonly ticketType$ = this.ticketSubject.asObservable(); 
+  private ticketsTypeSubject = new Subject<ITourTypeSelect>();
+  readonly ticketType$ = this.ticketsTypeSubject.asObservable(); 
   // tour type
-  private testBehaviorSubjectForSettings = new BehaviorSubject<ITourTypeSelect | null>(null)
-  readonly ticketTypeBehavior$ = this.testBehaviorSubjectForSettings.asObservable(); 
+  private ticketsSettingsBehaviorSubject = new BehaviorSubject<ITourTypeSelect | null>(null)
+  readonly ticketTypeBehavior$ = this.ticketsSettingsBehaviorSubject.asObservable(); 
   // tours render
-  private ticketUpdateSubject = new Subject<ITour[]>();
-  readonly ticketUpdateSubject$ = this.ticketUpdateSubject.asObservable();
+  private ticketsSubject = new Subject<ITour[]>();
+  readonly tickets$ = this.ticketsSubject.asObservable();
+  //goTo
+  public ticket: ITour;
 
 
   constructor(private ticketServiceRest: TicketsRestService) { }
@@ -29,22 +31,35 @@ export class TicketsService {
         return value.concat(singleTours)
      }))
   };
+
+  getTourById(data: string): Observable<ITour> {
+    return this.ticketServiceRest.getTicketById(data)
+  };
+
+  getSimilarTours(data: ITour): Observable<ITour[]> {
+    return this.ticketServiceRest.getSimiliarTours(data.country)
+  }
   
   updateTourType(type:ITourTypeSelect): void {
-    this.ticketSubject.next(type);
-    this.testBehaviorSubjectForSettings.next(type)
+    this.ticketsTypeSubject.next(type);
+    this.ticketsSettingsBehaviorSubject.next(type)
   };
 
   updateToursForRender(data: ITour[]) {
-    this.ticketUpdateSubject.next(data);
+    this.ticketsSubject.next(data);
   };
 
   createTour(data: any) {
-    console.log('create in ticketservice')
     return this.ticketServiceRest.postTour(data)
   }
-  searchTourByName(name: string) {
-    return this.ticketServiceRest.searchTourByName(name)
+  searchTourByName(data: string) {
+    return this.ticketServiceRest.searchTourByName(data)
+  }
+  ticketSub(data: ITour) {
+    this.ticket = data
+  }
+  getTicket(): ITour {
+    return this.ticket
   }
 
 

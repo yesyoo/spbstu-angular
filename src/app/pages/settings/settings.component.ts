@@ -4,6 +4,8 @@ import { Subject, take, takeUntil } from 'rxjs';
 import { ObservableExampleService } from '../../services/observable-example/observable-example.service'
 import { SettingsService } from '../../services/settings/settings.service';
 import { TicketsService } from '../../services/ticket/tickets/tickets.service';
+import { UserService } from '../../services/user/user.service';
+import { IUser } from '../../models/users';
 
 @Component({
   selector: 'app-settings',
@@ -11,6 +13,7 @@ import { TicketsService } from '../../services/ticket/tickets/tickets.service';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
+  user: IUser | null;
 
   // private subjectScope: Subject<string>
   // private subjectSubscribe: Subscription;
@@ -20,9 +23,12 @@ export class SettingsComponent implements OnInit {
   
   constructor(private observableExampleService: ObservableExampleService,
               private settingsService: SettingsService,
-              private ticketService: TicketsService) {};
+              private ticketService: TicketsService,
+              private userService: UserService) {};
 
   ngOnInit() {
+    this.user = this.userService.getUser()
+    console.log('user:', this.user)
     // this.subjectScope = this.observableExampleService.getSubject();
     // this.subjectScope.subscribe((data) => {
     //   console.log('data:', data)

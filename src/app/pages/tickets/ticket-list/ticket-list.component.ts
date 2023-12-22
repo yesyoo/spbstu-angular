@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { TicketsService } from 'src/app/services/ticket/tickets/tickets.service';
 import { ITour, ITourTypeSelect } from '../../../models/tours';
-import { TiсketsStorageService } from 'src/app/services/ticket/tiсkets-storage/tiсkets-storage.service';
 import { Router } from '@angular/router';
 import { BlockStyleDirective } from 'src/app/directives/block-style.directive';
 import { Subscription, fromEvent, debounceTime } from 'rxjs'
-import { UserService } from '../../../services/user/user.service';
+
 
 @Component({
   selector: 'app-ticket-list',
@@ -28,11 +27,10 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('ticketSearch') ticketSearch: ElementRef;
 
   constructor(private ticketService: TicketsService,
-              // private ticketsStorageService: TiсketsStorageService,
               private router: Router) {}
 
   ngOnInit(): void {
-    this.ticketService.ticketUpdateSubject$.subscribe(data => {
+    this.ticketService.tickets$.subscribe(data => {
       this.tickets = data }) // нужно отписаться
 
     this.tourUnsubscriber = this.ticketService.ticketType$.subscribe((data: ITourTypeSelect) => {
@@ -96,6 +94,7 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   goToTicketInfoPage(data: ITour): void {
+    this.ticketService.ticketSub(data)
     this.router.navigate([`/tickets/ticket/${data._id}`])
   };
 

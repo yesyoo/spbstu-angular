@@ -1,18 +1,20 @@
 <div *ngIf="user">
-    <div *ngFor="let item of orders; let i = index;"> 
-         <div class="order">
-            <h6><strong>Заказ №</strong> {{i + 1}}</h6>
-            <p><strong>firstName:</strong> {{item.firstName}}</p>
-            <p><strong>lastName:</strong> {{item.lastName}}</p>
-            <p><strong>citizen:</strong> {{item.citizen}}</p>
-            <p><strong>age:</strong> {{item.age}}</p>
-            <p><strong>birthDay:</strong> {{item.birthDay}}</p>
-            <p><strong>cardNumber:</strong> {{item.cardNumber}}</p>
-            <p><strong>tourId:</strong> {{item.tourId}}</p>
-         </div>
-         <button *ngIf="item.tourId" (click)="deleteOrder(item.tourId)">Delete</button>
+  
+        <div *ngFor="let item of orders; let i = index;"> 
+            <div class="order">
+               <h6><strong>Заказ №</strong> {{i + 1}}</h6>
+               <div><strong>Name:</strong> {{item.firstName}} {{item.lastName}}</div>
+               <div><strong>Citizen:</strong> {{item.citizen}}</div>
+               <div><strong>BirthDay:</strong> {{item.birthDay}} <span *ngIf="item.age"><strong>({{item.age}} yo)</strong></span></div>
+               <div><strong>cardNumber:</strong> {{item.cardNumber}}</div>
+               <div><strong>tourId:</strong> {{item.tourId}}</div>
+            </div>
+            <button *ngIf="item.tourId" (click)="deleteOrder(item.tourId)">Delete</button>
+       </div>
+
     </div>
-</div>
+
+
 <div *ngIf="!user">Авторизуйтесь</div>
 
 

@@ -19,6 +19,7 @@ export class RegistrationComponent implements OnInit {
   pswRepeat: string;
   email: string;
   cardNumber: string;
+  admin: boolean
   token: string
   // card checkbox
   checked: boolean;
@@ -50,10 +51,8 @@ export class RegistrationComponent implements OnInit {
       this.http.post<IUser>('http://localhost:3000/users/', this.user)
       .subscribe(response => 
       {
-        // конструкция - ну такое
         if(response as IUser) {
           this.userDb = response
-          console.log('we saved user in db:', response);
           this.messageService.add({severity:'success', summary:'Регистрация прошла успешно'})
         } 
       },

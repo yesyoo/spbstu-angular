@@ -12,17 +12,16 @@ import { OrdersService } from '../../../services/order/orders/orders.service';
 })
 export class OrderComponent implements OnInit, OnDestroy {
   orders: IOrder[];
-  user: IUser;
+  user: IUser | null;
 
   constructor(private userService: UserService,
-              private ordersService: OrdersService,
-              private elRef: ElementRef) { }
+              private ordersService: OrdersService) { }
 
   ngOnInit(): void {
     this.user = this.userService.getUser()
-    if(this.user.id) {
+    if(this.user?.id) {
       this.ordersService.getOrdersByUserId(this.user.id)
-      this.ordersService.order$.subscribe(data => {
+      this.ordersService.orders$.subscribe(data => {
       this.orders = data;
       })
     }
@@ -31,6 +30,5 @@ export class OrderComponent implements OnInit, OnDestroy {
   };
   deleteOrder(id: string): void {
     this.ordersService.deleteOrderById(id)
-    console.log('delete id:', id)
   };
 }

@@ -4,5 +4,7 @@ export interface IUser {
     psw: string,
     cardNumber?: string,
     token?: string | null,
-    id?: string | null
+    id?: string | null,
+    role?: Role | null
 }
+export type Role = 'admin' | 'superadmin' | 'user'

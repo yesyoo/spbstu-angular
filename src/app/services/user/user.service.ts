@@ -6,18 +6,21 @@ import { IUser } from '../../models/users';
 })
 
 export class UserService {
-  private user: IUser;
+  private user: IUser | null
   private token: string;
 
   constructor() { }
 
-  getUser(): IUser { 
+  getUser(): IUser | null { 
     return this.user 
   };
 
   setUser(user: IUser): void {
      this.user = user
   };
+  deleteUser(): void {
+    this.user = null
+  }
 
   getToken(): string | null {
     return this.token

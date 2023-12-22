@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ITour, ITourTest } from 'src/app/models/tours';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TiсketsStorageService } from 'src/app/services/ticket/tiсkets-storage/tiсkets-storage.service'
 import { IUser } from 'src/app/models/users';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -12,6 +12,7 @@ import { TicketsRestService } from '../../../services/ticket/tickets-rest/rest.s
 import { IOrder } from '../../../models/orders';
 import { OrdersService } from '../../../services/order/orders/orders.service';
 import { debounceTime } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
@@ -21,31 +22,42 @@ import { debounceTime } from 'rxjs';
 })
 export class TicketItemComponent implements OnInit, AfterViewInit {
   ticket: ITour | undefined;
-  // tours
   // nearestTours: INearestTour[];
   // toursLocation: ITourLocation[];
-  tourData: ITour[];
-
-  user: IUser;   
+  toursData: ITour[];
+  user: IUser | null;
   userForm: FormGroup;
-
   @ViewChild('ticketSearch') ticketSearch: ElementRef;
   ticketSearchInputValue: string;
   searchTicketSub: Subscription;
   ticketRestSub: Subscription;
-  searchTypes = [1, 2, 3];
-
+  // searchTypes = [1, 2, 3];
   
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private ticketStorage: TiсketsStorageService,
               private userService: UserService,
               private ticketService: TicketsService,
               private ticketRestService: TicketsRestService,
-              private ordersService: OrdersService) {}
-
+              private ordersService: OrdersService,
+              private messageService: MessageService) {}
 
   ngOnInit(): void {
-    this.user = this.userService.getUser();
+    this.user = this.userService.getUser()
+    this.ticket = this.ticketService.getTicket()
+    
+    if(this.ticket) {
+      this.ticketService.getSimilarTours(this.ticket).subscribe(data => this.toursData = data)
+    };
+
+    if(!this.ticket) {
+      this.ticketService.getTourById(this.route.snapshot.params['id'] as string).subscribe(data => {
+        this.ticket = data;
+        this.ticketService.getSimilarTours(this.ticket).subscribe(data => this.toursData = data)
+      })
+    };
+    
+    
     this.userForm = new FormGroup(
       {
         firstName: new FormControl('', {validators: Validators.required}),
@@ -65,26 +77,30 @@ export class TicketItemComponent implements OnInit, AfterViewInit {
     //   }
     // );
     
-    const routeIdParam = this.route.snapshot.paramMap.get('id')
-    const paramValueId = routeIdParam 
+    // const routeIdParam = this.route.snapshot.paramMap.get('id')
+    // const paramValueId = routeIdParam 
 
-    if(paramValueId) {
-      const ticketStorage = this.ticketStorage.getStorage()
+    // if(paramValueId) {
+    //   const ticketStorage = this.ticketStorage.getStorage()
       // this.ticket = ticketStorage.find((el) => el.id === paramValueId);
-      this.ticketRestService.getTicketById(paramValueId).subscribe(data => {
-        this.ticket = data
-        console.log('data', data)
-      })
-    };    
-    this.ticketService.getTours().subscribe(data => this.tourData = data)
+      // this.ticketRestService.getTicketById(paramValueId).subscribe(data => {
+      //   console.log('data', data)
+      // })
+    // };    
   };
 
   ngAfterViewInit(): void {
-    this.userForm.controls["cardNumber"].setValue(this.user?.cardNumber);
+    if(this.user) {
+      this.userForm.controls["cardNumber"].setValue(this.user.cardNumber);
+    }
     const fromEventObserver = fromEvent(this.ticketSearch.nativeElement, "keyup");
-    this.searchTicketSub = fromEventObserver.subscribe((ev: any) => {
+
+    this.searchTicketSub = fromEventObserver.pipe(
+      debounceTime(200)
+    ).subscribe((ev: any) => {
       console.log('ev', ev)
-      this.initSearchTour()
+      const tourName = (ev.target as HTMLInputElement)?.value;
+      this.initSearchTour(tourName)
     })
   };
 
@@ -96,22 +112,11 @@ export class TicketItemComponent implements OnInit, AfterViewInit {
     // console.log('Calendar ev', ev)
   };
 
-  
-  initSearchTour(): void {
-    // const type = Math.floor(Math.random() * this.searchTypes.length);
-    if(this.ticketRestSub && !this.searchTicketSub.closed) {
+  initSearchTour(tourName: string): void {
+    if(this.ticketRestSub) {
       this.ticketRestSub.unsubscribe()
     };
-    //мы не отписываемся :(
-    const inputObserver = fromEvent(this.ticketSearch.nativeElement, 'keyup')
-    this.searchTicketSub = inputObserver.pipe(
-      debounceTime(2000)
-    ).subscribe((ev) => { });
-        
-    // this.ticketRestSub = this.ticketService.getRandomNearestEvent(type).subscribe((data) => {
-    //   this.nearestTours = this.ticketService.transformData([data], this.toursLocation)
-    //   this.tourData = this.nearestTours
-    // })
+    this.ticketRestSub = this.ticketRestService.searchTourByName(tourName).subscribe(data => { this.toursData = data});
   };
 
   initTour(): void {
@@ -120,7 +125,7 @@ export class TicketItemComponent implements OnInit, AfterViewInit {
     const userId = this.userService.getUser()?.id || null;
 
     const postObj: IOrder = {
-      firstName: postData.firstName,
+      firstName: postData.firstName, 
       lastName: postData.lastName,
       citizen: postData.citizen,
       age: postData.age,
@@ -129,6 +134,12 @@ export class TicketItemComponent implements OnInit, AfterViewInit {
       tourId: postData._id,
       userId: userId
     };
-    this.ordersService.sendOrderData(postObj).subscribe()
+    this.ordersService.sendOrderData(postObj).subscribe(() => {      
+      this.messageService.add({severity:'success', summary: 'Заказ оформлен'}) 
+      setTimeout(() => {this.router.navigate(['tickets/orders'])}, 1500)
+    })
+  };
+  auth(): void {
+
   };
 }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IUser } from 'src/app/models/users';
 import { LocalStorageService } from '../local-storage/local-storage.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,8 @@ export class AuthService {
   private usersStorage: IUser[] = [];   
   private loginError = {error: 'Логин не совпадает'};
   
-  constructor(private localStorageService: LocalStorageService) { } 
+  constructor(private localStorageService: LocalStorageService,
+              private http: HttpClient) { } 
 
   checkUser(user: IUser):  {error: boolean | string} { 
     // ожидаем {error : false} и авторизуем юзера
@@ -59,9 +62,9 @@ export class AuthService {
     };
   };
 
-  updateUserPassword(user: IUser, psw: string): void {
-    user.psw = psw
-    this.localStorageService.setUser(user)
+  updatePassword(user: IUser, psw: string, newPsw: string): Observable<any> {
+    const passwords: {old: string, new: string} = { old: psw, new: newPsw }
+    return this.http.patch<any>(`http://localhost:3000/users/${user.id}`, {user, passwords})
   };
 };
 

@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TicketsService } from '../../../services/ticket/tickets/tickets.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { OrdersService } from '../../../services/order/orders/orders.service';
-import { IOrder } from '../../../models/orders';
-import { ITour } from 'src/app/models/tours';
 
 @Component({
   selector: 'app-tour',
@@ -11,7 +8,7 @@ import { ITour } from 'src/app/models/tours';
   styleUrls: ['./tour.component.scss']
 })
 export class TourComponent implements OnInit {
-  tourForm: FormGroup
+  tourForm: FormGroup;
 
   constructor(private ticketsService: TicketsService) { }
 
@@ -22,7 +19,9 @@ export class TourComponent implements OnInit {
         description: new FormControl(''),
         operator: new FormControl(''),
         price: new FormControl(''),
-        img: new FormControl()
+        img: new FormControl(),
+        country: new FormControl(),
+        city: new FormControl()
       });
   };
   
@@ -30,21 +29,13 @@ export class TourComponent implements OnInit {
     const tourDataRow = this.tourForm.getRawValue();
     let formParams = new FormData() // отправляем данные 2х типов, создаем formdata и копируем всю дату из формы в него
     
-    
     if(typeof tourDataRow === "object") {
       for(let prop in tourDataRow) {
-        console.log('prop', prop)
-        console.log('tourData', tourDataRow)
         formParams.append(prop, tourDataRow[prop])
-        console.log("res",formParams)
       }
-      
     };
- 
     this.ticketsService.createTour(formParams).subscribe(data => {})
-    console.log('we send tour', formParams)
   };
-
 
   selectFile(ev: any): void {
     console.log('ev', ev)
@@ -53,5 +44,4 @@ export class TourComponent implements OnInit {
       this.tourForm.patchValue({img: file});
     }
   };
-
 }

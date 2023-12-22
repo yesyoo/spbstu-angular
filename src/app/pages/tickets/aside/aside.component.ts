@@ -68,7 +68,7 @@ export class AsideComponent implements OnInit {
     );
   };
 
-  initTours(): void {
+  loadTours(): void {
     this.http.post('http://localhost:3000/tours/', {}).subscribe((data) => {
         this.ticketService.updateToursForRender(data as ITour[])
     })

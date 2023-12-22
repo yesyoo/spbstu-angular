@@ -24,7 +24,6 @@ export class OrdersRestService {
   };
   ///
   deleteOrderById(id: string): Observable<any> {
-    console.log('=> del')
     return this.http.delete(`http://localhost:3000/orders/${id}`)
   }
 }

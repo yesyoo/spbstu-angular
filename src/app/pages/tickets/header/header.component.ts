@@ -1,11 +1,10 @@
-import { Component, OnInit, OnDestroy, Input, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { IUser } from '../../../models/users';
 import { UserService } from '../../../services/user/user.service'
 import { IMenuType } from 'src/app/models/menuType';
 import { SimpleChanges } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth.service';
-import { TicketsService } from '../../../services/ticket/tickets/tickets.service';
 
 @Component({
   selector: 'app-header',
@@ -14,26 +13,24 @@ import { TicketsService } from '../../../services/ticket/tickets/tickets.service
 })
 export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   items: MenuItem[];
+  exitItem: string
   time: Date;
   private timerInterval: number;
-  user: IUser | undefined; 
+  user: IUser | undefined | null 
   @Input() menuType: IMenuType;
   private settingsActive = true;
 
   constructor(private userService: UserService,
-              private authService: AuthService,
-              private ticketService: TicketsService,
-              private el: ElementRef) { }
+              private authService: AuthService) { }
 
   ngOnInit(): void {
+    this.user = this.userService.getUser() 
+    this.user ? this.exitItem = 'Выйти' : this.exitItem = 'Вход'
     this.items = this.initMenuItems();
     
     this.timerInterval = window.setInterval(() => {
       this.time = new Date()
     }, 1000);
-
-    this.user = this.userService.getUser() 
-    // setTimeout(() => {console.log('user:', this.user?.login)}, 3000)
   };
 
   ngOnDestroy(): void {
@@ -61,14 +58,15 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         label: 'Настройки',
         routerLink:['settings'],
-        visible: this.settingsActive
+        visible: this.settingsActive && !!this.user
       }, 
       {
         label: 'Заказы',
-        routerLink:['orders']
+        routerLink:['orders'],
+        visible: !!this.user
       }, 
       {
-        label: 'Выйти',
+        label: this.exitItem,
         routerLink:['auth'],
         command: (ev) => {
             this.removeUser();
