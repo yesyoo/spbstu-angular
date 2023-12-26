@@ -1,33 +1,30 @@
 import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
-import { IOrder } from '../../../models/orders';
-import { TicketsService } from '../../../services/ticket/tickets/tickets.service';
 import { UserService } from '../../../services/user/user.service';
 import { IUser } from '../../../models/users';
 import { OrdersService } from '../../../services/order/orders/orders.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-order',
-  templateUrl: './order.component.html',
-  styleUrls: ['./order.component.scss']
+  templateUrl: './order-item.component.html',
+  styleUrls: ['./order-item.component.scss']
 })
-export class OrderComponent implements OnInit, OnDestroy {
-  orders: IOrder[];
+export class OrderItemComponent implements OnInit, OnDestroy {
+
+  orders: any
   user: IUser | null;
 
   constructor(private userService: UserService,
               private ordersService: OrdersService) { }
 
   ngOnInit(): void {
-    this.user = this.userService.getUser()
-    if(this.user?.id) {
-      this.ordersService.getOrdersByUserId(this.user.id)
-      this.ordersService.orders$.subscribe(data => {
-      this.orders = data;
-      })
-    }
+    this.user = this.userService.getUser();
+    this.ordersService.userOrders$.pipe(take(1)).subscribe(data => {this.orders = data ;console.log('orders', this.orders)})
   };
+
   ngOnDestroy(): void {
   };
+
   deleteOrder(id: string): void {
     this.ordersService.deleteOrderById(id)
   };

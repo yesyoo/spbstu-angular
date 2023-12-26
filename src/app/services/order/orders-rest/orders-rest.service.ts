@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IOrder } from '../../../models/orders';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { IUserInfo } from 'src/app/models/users';
 
 
 @Injectable({
@@ -11,7 +12,7 @@ export class OrdersRestService {
 
   constructor(private http: HttpClient) { }
 
-  sendOrder(data: IOrder): Observable<any> { 
+  sendOrder(data:{order: IOrder, user: IUserInfo}): Observable<any> { 
     return this.http.post('http://localhost:3000/orders/', data)
   };
 

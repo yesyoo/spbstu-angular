@@ -1,0 +1,24 @@
+<div *ngIf="user">
+        <div *ngFor="let order of orders.ordersArr; let i = index;"> 
+            <div class="order">
+               <h6><strong>Order</strong> {{i + 1}}</h6>
+               <div class="mb-2"><strong>Id:</strong> {{order.order._id}}</div>
+               <div class="mb-2">
+                  <div><strong>Name:</strong> {{orders.user.firstName}} {{orders.user.lastName}}</div>
+                  <div><strong>Citizen:</strong> {{orders.user.citizen}}</div>
+                  <div><strong>Age:</strong> {{orders.user.age}}</div>
+               </div>
+               <div class="mb-2">
+                  <div><strong>Tour Name:</strong> {{order.tour.name}}</div>
+                  <div><strong>Country:</strong> {{order.tour.country}}</div>
+                  <div><strong>City:</strong> {{order.tour.city}}</div>
+                  <div><strong>Price:</strong> {{order.tour.price}}</div>
+                  <div><strong>Tour Id:</strong> {{order.order.tourId}}</div>
+               </div>
+            </div>
+       </div>
+    </div>
+<div *ngIf="!user">Авторизуйтесь</div>
+
+
+

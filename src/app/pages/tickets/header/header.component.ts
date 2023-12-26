@@ -5,6 +5,7 @@ import { UserService } from '../../../services/user/user.service'
 import { IMenuType } from 'src/app/models/menuType';
 import { SimpleChanges } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth.service';
+import { OrdersService } from '../../../services/order/orders/orders.service';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   private settingsActive = true;
 
   constructor(private userService: UserService,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private ordersService: OrdersService) { }
 
   ngOnInit(): void {
     this.user = this.userService.getUser() 
@@ -63,7 +65,15 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         label: 'Заказы',
         routerLink:['orders'],
-        visible: !!this.user
+        visible: !!this.user,
+        command: (ev) => {
+          if(this.user) {
+            let userId: IUser = this.user
+            if(userId.id) {
+              this.ordersService.getOrdersByUserId(userId.id)
+            }
+          }
+        }
       }, 
       {
         label: this.exitItem,
@@ -76,9 +86,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   removeUser(): void {
-    const activeUser = this.userService.getUser();
-    if (activeUser) {
-      this.authService.deleteUser(activeUser)
-    }
+    this.userService.deleteUser()
   };
 };

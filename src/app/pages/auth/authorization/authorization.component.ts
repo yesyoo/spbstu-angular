@@ -21,7 +21,7 @@ export class AuthorizationComponent implements OnInit {
   login: string;
   psw: string;
   selectedValue: boolean;
-  cardNumber: string;
+  cardNumber: number;
   authTextButton: string;
   token: string;
 
@@ -54,7 +54,9 @@ export class AuthorizationComponent implements OnInit {
       const token: string = data.access_token;
       authUser.id = data.id
       this.userService.setToken(token);
-      this.router.navigate(['tickets/ticket-list']);      
+      this.router.navigate(['tickets/ticket-list']); 
+      
+      console.log('user data:', authUser)
   },
     (err: HttpErrorResponse) => {
       console.log('err', err);

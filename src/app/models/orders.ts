@@ -6,5 +6,14 @@ export interface IOrder {
     userId?: string | null,
     firstName?: string | null,
     lastName?: string | null,
-    citizen?: string | null
+    citizen?: string | null,
+}
+
+export interface IInfoUser {
+    userId: string,
+    firstName: string,
+    lastName?: string,
+    age?: number,
+    birthDay?: string,
+    citizen?: string,
 }

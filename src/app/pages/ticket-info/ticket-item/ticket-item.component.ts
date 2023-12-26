@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import { ITour, ITourTest } from 'src/app/models/tours';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TiсketsStorageService } from 'src/app/services/ticket/tiсkets-storage/tiсkets-storage.service'
-import { IUser } from 'src/app/models/users';
+import { IUser, IUserInfo } from 'src/app/models/users';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user/user.service';
 import { forkJoin, fromEvent, lastValueFrom, pipe, Subject, Subscription, takeLast } from 'rxjs';
@@ -122,23 +122,29 @@ export class TicketItemComponent implements OnInit, AfterViewInit {
   initTour(): void {
     const userData = this.userForm.getRawValue();
     const postData = {...this.ticket, ...userData};
+
     const userId = this.userService.getUser()?.id || null;
 
-    const postObj: IOrder = {
+    const orderPostData: IOrder = {
+      tourId: postData._id,
+      userId: userId
+    };
+
+    const userPostData: IUserInfo = {
       firstName: postData.firstName, 
       lastName: postData.lastName,
       citizen: postData.citizen,
       age: postData.age,
       birthDay: postData.birthDay,
       cardNumber: postData.cardNumber,
-      tourId: postData._id,
       userId: userId
-    };
-    this.ordersService.sendOrderData(postObj).subscribe(() => {      
+    }
+    this.ordersService.sendOrderData({order: orderPostData, user: userPostData}).subscribe(() => {      
       this.messageService.add({severity:'success', summary: 'Заказ оформлен'}) 
       setTimeout(() => {this.router.navigate(['tickets/orders'])}, 1500)
     })
   };
+  
   auth(): void {
 
   };

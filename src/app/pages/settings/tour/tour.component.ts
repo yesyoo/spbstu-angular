@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TicketsService } from '../../../services/ticket/tickets/tickets.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-tour',
@@ -10,7 +12,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class TourComponent implements OnInit {
   tourForm: FormGroup;
 
-  constructor(private ticketsService: TicketsService) { }
+  constructor(private ticketsService: TicketsService,
+             private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.tourForm = new FormGroup(
@@ -18,7 +21,7 @@ export class TourComponent implements OnInit {
         name: new FormControl('', {validators: Validators.required}),
         description: new FormControl(''),
         operator: new FormControl(''),
-        price: new FormControl(''),
+        price: new FormControl('', {validators: Validators.maxLength(10)}),
         img: new FormControl(),
         country: new FormControl(),
         city: new FormControl()
@@ -34,7 +37,9 @@ export class TourComponent implements OnInit {
         formParams.append(prop, tourDataRow[prop])
       }
     };
-    this.ticketsService.createTour(formParams).subscribe(data => {})
+    this.ticketsService.createTour(formParams).subscribe(data => {
+      this.messageService.add({severity:'success', summary: "Успешно"})
+    })
   };
 
   selectFile(ev: any): void {

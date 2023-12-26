@@ -18,7 +18,7 @@ export class RegistrationComponent implements OnInit {
   psw: string;
   pswRepeat: string;
   email: string;
-  cardNumber: string;
+  cardNumber: number;
   admin: boolean
   token: string
   // card checkbox

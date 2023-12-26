@@ -29,7 +29,7 @@
     <div *ngIf="showCardNumber; else noSelected";  
          class="d-flex flex-column mb-3">
         <span>Номер карты</span>
-        <input type="text"
+        <input type="number"
                pInputText
                [(ngModel)]="cardNumber"/>
     </div>

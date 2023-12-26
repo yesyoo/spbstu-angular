@@ -3,7 +3,7 @@ import { TicketsService } from 'src/app/services/ticket/tickets/tickets.service'
 import { ITour, ITourTypeSelect } from '../../../models/tours';
 import { Router } from '@angular/router';
 import { BlockStyleDirective } from 'src/app/directives/block-style.directive';
-import { Subscription, fromEvent, debounceTime } from 'rxjs'
+import { Subscription, fromEvent, debounceTime, take } from 'rxjs'
 
 
 @Component({
@@ -30,9 +30,6 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
               private router: Router) {}
 
   ngOnInit(): void {
-    this.ticketService.tickets$.subscribe(data => {
-      this.tickets = data }) // нужно отписаться
-
     this.tourUnsubscriber = this.ticketService.ticketType$.subscribe((data: ITourTypeSelect) => {
       console.log('data', data);
 
@@ -70,7 +67,7 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
       (data) => {
            this.tickets = data;
            this.ticketsCopy = [...this.tickets];
-          //  this.ticketsStorageService.setStorage(data);
+         
       }
     );
   };
