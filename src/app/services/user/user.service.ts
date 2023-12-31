@@ -12,7 +12,7 @@ export class UserService {
   constructor() { }
 
   getUser(): IUser | null { 
-    return this.user 
+    return this.user;
   };
 
   setUser(user: IUser): void {

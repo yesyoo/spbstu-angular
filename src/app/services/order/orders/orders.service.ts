@@ -9,14 +9,16 @@ import { IUserInfo } from 'src/app/models/users';
 })
 export class OrdersService {
 
-  private userOrdersSubject = new Subject<IOrder[]>();
-  readonly userOrders$ = this.userOrdersSubject.asObservable();
+
+ 
 
   constructor(private ordersServiceRest: OrdersRestService) { }
 
-  getOrdersByUserId(userId: string): void {
-    this.ordersServiceRest.getToursByUserId(userId).subscribe(data => this.userOrdersSubject.next(data))
-  };
+
+
+  getOrders(userId: string ) {
+    return this.ordersServiceRest.getToursByUserId(userId)
+  }
 
   sendOrderData(data:{order: IOrder, user: IUserInfo}): Observable<any> { 
     return this.ordersServiceRest.sendOrder(data);

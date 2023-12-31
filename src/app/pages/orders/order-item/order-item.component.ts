@@ -17,9 +17,11 @@ export class OrderItemComponent implements OnInit, OnDestroy {
   constructor(private userService: UserService,
               private ordersService: OrdersService) { }
 
-  ngOnInit(): void {
-    this.user = this.userService.getUser();
-    this.ordersService.userOrders$.pipe(take(1)).subscribe(data => {this.orders = data ;console.log('orders', this.orders)})
+  ngOnInit(): void { 
+    this.user = <IUser>this.userService.getUser();
+    if (this.user) { 
+      this.ordersService.getOrders(this.user.id).subscribe((data) => this.orders = data)
+    }
   };
 
   ngOnDestroy(): void {

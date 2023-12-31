@@ -65,15 +65,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         label: 'Заказы',
         routerLink:['orders'],
-        visible: !!this.user,
-        command: (ev) => {
-          if(this.user) {
-            let userId: IUser = this.user
-            if(userId.id) {
-              this.ordersService.getOrdersByUserId(userId.id)
-            }
-          }
-        }
       }, 
       {
         label: this.exitItem,

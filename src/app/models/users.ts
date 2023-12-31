@@ -4,7 +4,7 @@ export interface IUser {
     psw: string,
     cardNumber?: number,
     token?: string | null,
-    id?: string | null,
+    id?: string,
     role?: Role | null,
 }
 
